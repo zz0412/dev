@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://cxf.apache.org/jaxws 
+    http://cxf.apache.org/schemas/jaxws.xsd">
+
+    <bean id="AutoTask" class="quartz.AutoTask"/>
+
+    <!-- 每小时定时 begin-->
+    <bean id="everyHourJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref local="AutoTask"/>
+        </property>
+        <property name="targetMethod">
+            <value>everyHour</value>
+        </property>
+    </bean>
+    <bean id="everyHourTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail">
+            <ref bean="everyHourJobDetail"/>
+        </property>
+        <property name="startDelay">
+            <value>60000</value>
+        </property>
+        <property name="repeatInterval">
+            <value>3600000</value>
+        </property>
+    </bean>
+    <!-- 每小时定时 end-->
+
+    <!-- 每刻定时 begin-->
+    <bean id="everyQuarterJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref local="AutoTask"/>
+        </property>
+        <property name="targetMethod">
+            <value>everyQuarter</value>
+        </property>
+    </bean>
+    <bean id="everyQuarterTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail">
+            <ref bean="everyQuarterJobDetail"/>
+        </property>
+
+        <property name="startDelay">
+            <value>60000</value>
+        </property>
+        <property name="repeatInterval">
+            <value>900000</value>
+        </property>
+    </bean>
+    <!-- 每刻定时 end-->
+
+    <!-- 每周begin -->
+    <bean id="everyWeekJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref local="AutoTask"/>
+        </property>
+        <property name="targetMethod">
+            <value>everyWeek</value>
+        </property>
+    </bean>
+    <bean id="everyWeekTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="everyWeekJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- 每周三凌晨2点 -->
+            <value>0 0 11 ? * MON,WED,FRI</value>
+        </property>
+    </bean>
+    <!-- 每周end -->
+
+    <!-- 每天晚上8点10到12点begin -->
+    <bean id="specificTimeJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref local="AutoTask"/>
+        </property>
+        <property name="targetMethod">
+            <value>specificTime</value>
+        </property>
+    </bean>
+    <bean id="specificTimeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="specificTimeJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 10/20 20-23 ? * *</value>
+        </property>
+    </bean>
+    <!-- 每天晚上8点10到12点end-->
+
+    <bean id="schdulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref local="everyHourTrigger"/>
+                <ref local="everyQuarterTrigger"/>
+                <ref local="everyWeekTrigger"/>
+                <ref local="specificTimeTrigger"/>
+            </list>
+        </property>
+    </bean>
+</beans>

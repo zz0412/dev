@@ -23,6 +23,6 @@ build
 *.iws
 *.class
 classes
-bin/target
+# bin/target
 out
 .studio

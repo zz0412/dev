@@ -1,0 +1,14 @@
+package com.luoshengsha.mapper;
+
+import com.luoshengsha.bean.User;
+
+public interface UserMapper {
+	/**±£´æ**/
+	public void save(User user);
+	/**ÐÞ¸Ä**/
+	public void update(User user);
+	/**²éÕÒ**/
+	public User find(String id);
+	/**É¾³ý**/
+	public void delete(String id);
+}
